@@ -1,0 +1,51 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html>
+  <head>
+    <title>SST</title>
+  </head>
+  <body>
+    <h2>Cadastrar Colaborador</h2>
+
+    <form id="form">
+      <input id="nome" placeholder="Nome" required />
+      <input id="cpf" placeholder="CPF" required />
+      <button type="submit">Salvar</button>
+    </form>
+
+    <h2>Lista</h2>
+    <ul id="lista"></ul>
+
+    <script>
+      document.getElementById("form").onsubmit = async (e) => {
+        e.preventDefault();
+
+        await fetch("/colaboradores", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: nome.value,
+            cpf: cpf.value,
+          }),
+        });
+
+        carregar();
+      };
+
+      async function carregar() {
+        const res = await fetch("/colaboradores");
+        const dados = await res.json();
+
+        lista.innerHTML = "";
+
+        dados.forEach((c) => {
+          const li = document.createElement("li");
+          li.innerText = c[1] + " - " + c[2];
+          lista.appendChild(li);
+        });
+      }
+
+      carregar();
+    </script>
+  </body>
+</html>
